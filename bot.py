@@ -4,12 +4,11 @@
 from initialize import *
 # import re
 import os
-# import time
+import time
 from datetime import datetime
-from telebot import types
-# from models import User
-# from threading import Thread
-# from threads import queue_update_thread, notification_thread
+# from telebot import types
+from threading import Thread
+from threads import notification_thread
 from tools import implode_new_lines, bot_send_message
 
 
@@ -49,7 +48,7 @@ def handle_start_help(message):
                  'Claymore\'s-майнеров. Бота я делаю под себя, но если вдруг у тебя есть идеи или вопросы, ' \
                  'то пиши @unknownplayer, попробуем что-нибудь сделать.\n' \
                  'Командуй /info, чтобы начать.'.format(message.chat.username)
-        bot_send_message(message.chat.id, answer, reply_markup=types.ReplyKeyboardHide())
+        bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -67,7 +66,8 @@ def show_info(message):
             return False
 
         answer = 'Тут будет статистика:\n'
-        bot_send_message(message.chat.id, answer, reply_markup=types.ReplyKeyboardHide())
+
+        bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -76,3 +76,35 @@ def show_info(message):
                                                                 sys.exc_info()[2].tb_frame.f_code.co_filename),
                                                             sys._getframe().f_code.co_name,
                                                             e))
+
+
+if __name__ == '__main__':
+    queue_thread = notification_threads_array = None
+    while True:
+        try:
+            last_start_time = datetime.now()
+            log.info('starting bot in {}'.format(last_start_time))
+
+            if notification_threads_array is None:
+                notification_threads_array = []
+                for i in range(1):
+                    notification_threads_array.append(
+                        Thread(target=notification_thread, name='NotificationThread{}'.format(i)))
+                    notification_threads_array[i].daemon = True
+                    notification_threads_array[i].start()
+
+            bot.polling(none_stop=True)
+
+            log.info('exiting with keyboard interrupt... wait 10 sec')
+            time.sleep(10)
+        except KeyboardInterrupt:
+            sys.exit()
+        except Exception as main_e:
+            log.error(
+                '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+                                                                sys.exc_info()[2].tb_lineno,
+                                                                os.path.basename(
+                                                                    sys.exc_info()[2].tb_frame.f_code.co_filename),
+                                                                sys._getframe().f_code.co_name,
+                                                                main_e))
+            time.sleep(10)
