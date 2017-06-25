@@ -65,8 +65,6 @@ def show_info(message):
         if request_is_old(message):
             return False
 
-        'asdsada'
-
         answer = 'Тут будет статистика.\n'
         bot_send_message(message.chat.id, answer)
     except Exception as e:
