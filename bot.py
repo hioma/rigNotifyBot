@@ -6,11 +6,11 @@ from initialize import *
 import os
 import time
 from datetime import datetime
-# from telebot import types
 from threading import Thread
 from threads import notification_thread
 from tools import implode_new_lines, bot_send_message
 import urllib2
+
 
 def request_is_old(message):
     try:
@@ -65,8 +65,11 @@ def show_info(message):
         if request_is_old(message):
             return False
 
+        response = urllib2.urlopen('http://127.0.0.1:3333/')
+        html = response.read()
+        print html + 'sorry its test'
+
         answer = 'Тут будет статистика.\n'
-        'and another one commit - without github proc'
         bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(
