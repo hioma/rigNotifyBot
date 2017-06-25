@@ -66,6 +66,7 @@ def show_info(message):
             return False
 
         answer = 'Тут будет статистика.\n'
+        'and another one commit'
         bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(
