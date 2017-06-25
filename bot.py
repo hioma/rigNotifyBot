@@ -10,7 +10,7 @@ from datetime import datetime
 from threading import Thread
 from threads import notification_thread
 from tools import implode_new_lines, bot_send_message
-
+import urllib2
 
 def request_is_old(message):
     try:
@@ -65,8 +65,9 @@ def show_info(message):
         if request_is_old(message):
             return False
 
-        answer = 'Тут будет статистика:\n'
+        'asdsada'
 
+        answer = 'Тут будет статистика.\n'
         bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(
