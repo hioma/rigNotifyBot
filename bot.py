@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from initialize import *
-# import re
+import re
 import os
 import time
 from datetime import datetime
@@ -65,11 +65,17 @@ def show_info(message):
         if request_is_old(message):
             return False
 
-        response = urllib2.urlopen('http://127.0.0.1:3333/')
-        html = response.read()
-        print html + 'sorry its test'
+        answer = 'Статистика:\n'
+        for miner in miners:
+            response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
+            html = response.read()
+            m = re.search(r'\{"result": \["[^"]+?", "[^"]+?", "[^"]+?", "([^"]+?)", "[^"]+?", "([^"]+?)", "([^"]+?)", "[^"]+?", "[^"]+?"\]\}<br>',
+                          message.text)
+            primary_hashrates = m.group(1)
+            secondary_hashrates = m.group(2)
+            temps_and_fans = m.group(3)
+            answer += "{}\n{}\n{}".format(primary_hashrates, secondary_hashrates, temps_and_fans)
 
-        answer = 'Тут будет статистика.\n'
         bot_send_message(message.chat.id, answer)
     except Exception as e:
         log.error(

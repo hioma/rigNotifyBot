@@ -3,15 +3,15 @@
 
 import sys
 import logging
-import config
 import telebot
+from config import *
 # import Queue
 
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(token)
 last_start_time = None
 
 logging_mode = logging.INFO
