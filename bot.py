@@ -9,7 +9,6 @@ from datetime import datetime
 from threading import Thread
 from threads import notification_thread
 from tools import implode_new_lines, bot_send_message
-from config import miners
 import urllib2
 
 

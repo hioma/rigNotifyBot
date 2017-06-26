@@ -4,7 +4,7 @@
 import sys
 import logging
 import telebot
-import config
+from config import *
 # import Queue
 
 
