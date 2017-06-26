@@ -5,6 +5,7 @@ from initialize import *
 import re
 import os
 import time
+import string
 from datetime import datetime
 from threading import Thread
 from threads import notification_thread
@@ -69,12 +70,29 @@ def show_info(message):
         for miner in miners:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
-            m = re.search(r'\{"result": \["[^"]+?", "[^"]+?", "[^"]+?", "([^"]+?)", "[^"]+?", "([^"]+?)", "([^"]+?)", "[^"]+?", "[^"]+?"\]\}<br>',
-                          html)
-            primary_hashrates = m.group(1)
-            secondary_hashrates = m.group(2)
-            temps_and_fans = m.group(3)
-            answer += "{}\n{}\n{}".format(primary_hashrates, secondary_hashrates, temps_and_fans)
+            m = re.search(miners[miner]['regex'], html)
+
+            primary_hashrates = string.split(m.group(miners[miner]['regex_primary_hashrates']), ';')
+            if miners[miner]['type'] == 'etc/dec':
+                secondary_hashrates = string.split(m.group(miners[miner]['regex_secondary_hashrates']), ';')
+            temps_and_fans = string.split(m.group(miners[miner]['regex_temps_and_fans']), ';')
+
+            if miners[miner]['type'] == 'etc/dec':
+                answer += "GPU0: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
+                          "GPU1: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
+                          "GPU4: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
+                          "GPU5: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n".format(
+                    float(primary_hashrates[0]) / 1000, float(secondary_hashrates[0]) / 1000, temps_and_fans[0], temps_and_fans[1],
+                    float(primary_hashrates[1]) / 1000, float(secondary_hashrates[1]) / 1000, temps_and_fans[2], temps_and_fans[3],
+                    float(primary_hashrates[2]) / 1000, float(secondary_hashrates[2]) / 1000, temps_and_fans[8], temps_and_fans[9],
+                    float(primary_hashrates[3]) / 1000, float(secondary_hashrates[3]) / 1000, temps_and_fans[10], temps_and_fans[11],
+                )
+            else:
+                answer += "GPU2: {}h/s ZEC, {}°, {}% fan\n" \
+                          "GPU3: {}h/s ZEC, {}°, {}% fan\n".format(
+                    float(primary_hashrates[0]), temps_and_fans[4], temps_and_fans[5],
+                    float(primary_hashrates[1]), temps_and_fans[6], temps_and_fans[7],
+                )
 
         bot_send_message(message.chat.id, answer)
     except Exception as e:
