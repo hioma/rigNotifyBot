@@ -70,7 +70,7 @@ def show_info(message):
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
             m = re.search(r'\{"result": \["[^"]+?", "[^"]+?", "[^"]+?", "([^"]+?)", "[^"]+?", "([^"]+?)", "([^"]+?)", "[^"]+?", "[^"]+?"\]\}<br>',
-                          message.text)
+                          html)
             primary_hashrates = m.group(1)
             secondary_hashrates = m.group(2)
             temps_and_fans = m.group(3)
