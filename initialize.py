@@ -11,7 +11,7 @@ from config import *
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-bot = telebot.TeleBot(config.token)
+bot = telebot.TeleBot(token)
 last_start_time = None
 
 logging_mode = logging.INFO
