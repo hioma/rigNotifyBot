@@ -4,14 +4,14 @@
 import sys
 import logging
 import telebot
-from config import *
+import config
 # import Queue
 
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(config.token)
 last_start_time = None
 
 logging_mode = logging.INFO
