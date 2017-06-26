@@ -73,7 +73,7 @@ def show_info(message):
             m = re.search(miners[miner]['regex'], html)
 
             primary_hashrates = string.split(m.group(miners[miner]['regex_primary_hashrates']), ';')
-            if miners[miner]['type'] == 'etc/dec':
+            if miners[miner]['type'] == 'eth/dec':
                 secondary_hashrates = string.split(m.group(miners[miner]['regex_secondary_hashrates']), ';')
             temps_and_fans = string.split(m.group(miners[miner]['regex_temps_and_fans']), ';')
 
