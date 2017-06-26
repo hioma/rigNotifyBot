@@ -77,7 +77,7 @@ def show_info(message):
                 secondary_hashrates = string.split(m.group(miners[miner]['regex_secondary_hashrates']), ';')
             temps_and_fans = string.split(m.group(miners[miner]['regex_temps_and_fans']), ';')
 
-            if miners[miner]['type'] == 'etc/dec':
+            if miners[miner]['type'] == 'eth/dec':
                 answer += "GPU0: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
                           "GPU1: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
                           "GPU4: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
