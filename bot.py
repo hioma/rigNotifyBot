@@ -66,33 +66,28 @@ def show_info(message):
         if request_is_old(message):
             return False
 
-        answer = 'Статистика:\n'
+        answer = ''
         for miner in miners:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
-            m = re.search(miners[miner]['regex'], html)
+            param_vals = re.search(miners[miner]['regex'], html)
 
-            primary_hashrates = string.split(m.group(miners[miner]['regex_primary_hashrates']), ';')
-            if miners[miner]['type'] == 'eth/dec':
-                secondary_hashrates = string.split(m.group(miners[miner]['regex_secondary_hashrates']), ';')
-            temps_and_fans = string.split(m.group(miners[miner]['regex_temps_and_fans']), ';')
+            format_dict = {}
+            for index, param_name in enumerate(miners[miner]['parsed_params']):
+                format_dict[param_name] = param_vals.group(index + 1)
 
-            if miners[miner]['type'] == 'eth/dec':
-                answer += "GPU0: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
-                          "GPU1: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
-                          "GPU4: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n" \
-                          "GPU5: {}mh/s ETH, {}mhs DEC, {}°, {}% fan\n".format(
-                    float(primary_hashrates[0]) / 1000, float(secondary_hashrates[0]) / 1000, temps_and_fans[0], temps_and_fans[1],
-                    float(primary_hashrates[1]) / 1000, float(secondary_hashrates[1]) / 1000, temps_and_fans[2], temps_and_fans[3],
-                    float(primary_hashrates[2]) / 1000, float(secondary_hashrates[2]) / 1000, temps_and_fans[8], temps_and_fans[9],
-                    float(primary_hashrates[3]) / 1000, float(secondary_hashrates[3]) / 1000, temps_and_fans[10], temps_and_fans[11],
-                )
-            else:
-                answer += "GPU2: {}h/s ZEC, {}°, {}% fan\n" \
-                          "GPU3: {}h/s ZEC, {}°, {}% fan\n".format(
-                    float(primary_hashrates[0]), temps_and_fans[4], temps_and_fans[5],
-                    float(primary_hashrates[1]), temps_and_fans[6], temps_and_fans[7],
-                )
+            answer += miners[miner]['prefix_msg_format'].format(**format_dict)
+            gpu_order_no = 0
+            for gpu_no in range(0, len(miners[miner]['di'])):
+                gpu_num = int(miners[miner]['di'][gpu_no])
+                format_dict['gpu_num'] = gpu_num
+                format_dict['hashrate_primary'] = format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]
+                format_dict['hashrate_secondary'] = format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]
+                format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
+                format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
+                gpu_order_no += 1
+                answer += miners[miner]['gpu_msg_format'].format(**format_dict)
+            answer += miners[miner]['postfix_msg_format'].format(**format_dict)
 
         bot_send_message(message.chat.id, answer)
     except Exception as e:
