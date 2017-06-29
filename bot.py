@@ -83,12 +83,12 @@ def show_info(message):
                 format_dict['gpu_num'] = gpu_num
                 hashrate_primary = format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]
                 if hashrate_primary.isdigit():
-                    format_dict['hashrate_primary'] = float(hashrate_primary) / miners[miner]['divider']['primary']
+                    format_dict['hashrate_primary'] = round(float(hashrate_primary) / miners[miner]['divider']['primary'], miners[miner]['round']['primary'])
                 else:
                     format_dict['hashrate_primary'] = 0
                 hashrate_secondary = format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]
                 if hashrate_secondary.isdigit():
-                    format_dict['hashrate_secondary'] = float(hashrate_secondary) / miners[miner]['divider']['secondary']
+                    format_dict['hashrate_secondary'] = round(float(hashrate_secondary) / miners[miner]['divider']['secondary'], miners[miner]['round']['secondary'])
                 else:
                     format_dict['hashrate_secondary'] = 0
                 format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
