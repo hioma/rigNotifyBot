@@ -81,12 +81,13 @@ def show_info(message):
             for gpu_no in range(0, len(miners[miner]['di'])):
                 gpu_num = int(miners[miner]['di'][gpu_no])
                 format_dict['gpu_num'] = gpu_num
-                format_dict['hashrate_primary'] = format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]
-                format_dict['hashrate_secondary'] = format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]
+                format_dict['hashrate_primary'] = float(format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]) / miners[miner]['divider']['primary']
+                format_dict['hashrate_secondary'] = float(format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]) / miners[miner]['divider']['secondary']
                 format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
                 format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
                 gpu_order_no += 1
                 answer += miners[miner]['gpu_msg_format'].format(**format_dict)
+
             answer += miners[miner]['postfix_msg_format'].format(**format_dict)
 
         bot_send_message(message.chat.id, answer)
