@@ -81,8 +81,16 @@ def show_info(message):
             for gpu_no in range(0, len(miners[miner]['di'])):
                 gpu_num = int(miners[miner]['di'][gpu_no])
                 format_dict['gpu_num'] = gpu_num
-                format_dict['hashrate_primary'] = float(format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]) / miners[miner]['divider']['primary']
-                format_dict['hashrate_secondary'] = float(format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]) / miners[miner]['divider']['secondary']
+                hashrate_primary = format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]
+                if hashrate_primary.isdigit():
+                    format_dict['hashrate_primary'] = float(hashrate_primary) / miners[miner]['divider']['primary']
+                else:
+                    format_dict['hashrate_primary'] = 0
+                hashrate_secondary = format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]
+                if hashrate_secondary.isdigit():
+                    format_dict['hashrate_secondary'] = float(hashrate_secondary) / miners[miner]['divider']['secondary']
+                else:
+                    format_dict['hashrate_secondary'] = 0
                 format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
                 format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
                 gpu_order_no += 1
