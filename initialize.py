@@ -5,7 +5,7 @@ import sys
 import logging
 import telebot
 from config import *
-# import Queue
+import Queue
 
 
 reload(sys)
