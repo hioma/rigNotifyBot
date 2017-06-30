@@ -82,7 +82,7 @@ def handle_start_help(message):
 
 @bot.message_handler(commands=['info'])
 def show_info(message):
-    try:
+    # try:
         user = get_user_info_and_check_timestamp(message)
         if not user:
             return False
@@ -121,14 +121,14 @@ def show_info(message):
             answer += miners[miner]['postfix_msg_format'].format(**format_dict)
 
         bot_send_message(message.chat.id, answer)
-    except Exception as e:
-        log.error(
-            '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
-                                                            sys.exc_info()[2].tb_lineno,
-                                                            os.path.basename(
-                                                                sys.exc_info()[2].tb_frame.f_code.co_filename),
-                                                            sys._getframe().f_code.co_name,
-                                                            e))
+    # except Exception as e:
+    #     log.error(
+    #         '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+    #                                                         sys.exc_info()[2].tb_lineno,
+    #                                                         os.path.basename(
+    #                                                             sys.exc_info()[2].tb_frame.f_code.co_filename),
+    #                                                         sys._getframe().f_code.co_name,
+    #                                                         e))
 
 
 if __name__ == '__main__':
