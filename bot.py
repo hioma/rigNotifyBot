@@ -87,7 +87,8 @@ def show_info(message):
         if not user:
             return False
 
-        answer = json.dumps(user) #
+        print json.dumps(user)
+        answer = '' #
         for miner in miners:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
