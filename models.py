@@ -14,7 +14,7 @@ class Users:
     @staticmethod
     def get_or_create_user(telegram_nickname, chat_id):
         with shelve.open(shelve_name) as storage:
-            if not 'users' in storage:
+            if 'users' not in storage:
                 storage['users'] = {}
                 logging.getLogger('bot').info('DB created')
             if telegram_nickname not in storage['users']:
