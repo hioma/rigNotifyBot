@@ -13,8 +13,7 @@ sys.setdefaultencoding('utf-8')
 class Users:
     @staticmethod
     def get_or_create_user(telegram_nickname, chat_id):
-        print 'here1'
-        with shelve.open(shelve_name) as storage:
+        with shelve.open(shelve_name, writeback=True) as storage:
             print 'here2'
             if 'users' not in storage:
                 storage['users'] = {}
@@ -27,7 +26,7 @@ class Users:
 
     @staticmethod
     def get_active():
-        with shelve.open(shelve_name) as storage:
+        with shelve.open(shelve_name, writeback=True) as storage:
             if 'users' in storage:
                 for user in storage['users']:
                     if storage['users'][user]['active']:
