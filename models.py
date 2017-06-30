@@ -17,17 +17,18 @@ class Users:
         if 'users' not in storage:
             storage['users'] = {}
             logging.getLogger('bot').info('DB created')
-        print 'here3'
         if telegram_nickname not in storage['users']:
             storage['users'][telegram_nickname] = {'chat_id': chat_id, 'active': True}
             logging.getLogger('bot').info('Added new user: @{} ({})'.format(telegram_nickname, chat_id))
+        user = storage['users'][telegram_nickname]
         storage.close()
-        return storage['users'][telegram_nickname]
+        return user
 
     @staticmethod
     def get_active():
-        with shelve.open(shelve_name, writeback=True) as storage:
-            if 'users' in storage:
-                for user in storage['users']:
-                    if storage['users'][user]['active']:
-                        yield storage['users'][user]
+        storage = shelve.open(shelve_name, writeback=True)
+        if 'users' in storage:
+            for user in storage['users']:
+                if storage['users'][user]['active']:
+                    yield storage['users'][user]
+        storage.close()
