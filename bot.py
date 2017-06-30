@@ -6,6 +6,7 @@ import re
 import os
 import time
 import string
+import json
 from datetime import datetime
 from threading import Thread
 from threads import queue_update_thread, notification_thread
@@ -86,7 +87,7 @@ def show_info(message):
         if not user:
             return False
 
-        answer = ''
+        answer = json.dump(user) #############
         for miner in miners:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
@@ -137,18 +138,18 @@ if __name__ == '__main__':
             last_start_time = datetime.now()
             log.info('starting bot in {}'.format(last_start_time))
 
-            if queue_thread is None:
-                queue_thread = Thread(target=queue_update_thread, name='QueueThread')
-                queue_thread.daemon = True
-                queue_thread.start()
-
-            if notification_threads_array is None:
-                notification_threads_array = []
-                for i in range(1):
-                    notification_threads_array.append(
-                        Thread(target=notification_thread, name='NotificationThread{}'.format(i)))
-                    notification_threads_array[i].daemon = True
-                    notification_threads_array[i].start()
+            # if queue_thread is None:
+            #     queue_thread = Thread(target=queue_update_thread, name='QueueThread')
+            #     queue_thread.daemon = True
+            #     queue_thread.start()
+            #
+            # if notification_threads_array is None:
+            #     notification_threads_array = []
+            #     for i in range(1):
+            #         notification_threads_array.append(
+            #             Thread(target=notification_thread, name='NotificationThread{}'.format(i)))
+            #         notification_threads_array[i].daemon = True
+            #         notification_threads_array[i].start()
 
             bot.polling(none_stop=True)
 
