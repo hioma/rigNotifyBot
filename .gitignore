@@ -153,3 +153,4 @@ fabric.properties
 
 config.py
 *.log
+db.shelve

@@ -8,8 +8,9 @@ import time
 import string
 from datetime import datetime
 from threading import Thread
-from threads import notification_thread
+from threads import queue_update_thread, notification_thread
 from tools import implode_new_lines, bot_send_message
+from models import Users
 import urllib2
 
 
@@ -27,6 +28,24 @@ def request_is_old(message):
             log.info("received new message '{}' from @{}".format(implode_new_lines(text),
                                                                  message.chat.username))
             return False
+    except Exception as e:
+        log.error(
+            '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+                                                            sys.exc_info()[2].tb_lineno,
+                                                            os.path.basename(
+                                                                sys.exc_info()[2].tb_frame.f_code.co_filename),
+                                                            sys._getframe().f_code.co_name,
+                                                            e))
+        return False
+
+
+def get_user_info_and_check_timestamp(message):
+    try:
+        if request_is_old(message):
+            return False
+
+        user = Users.get_or_create_user(message.chat.username, message.chat.id)
+        return user
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -63,7 +82,8 @@ def handle_start_help(message):
 @bot.message_handler(commands=['info'])
 def show_info(message):
     try:
-        if request_is_old(message):
+        user = get_user_info_and_check_timestamp(message)
+        if not user:
             return False
 
         answer = ''
@@ -77,6 +97,7 @@ def show_info(message):
                 format_dict[param_name] = param_vals.group(index + 1)
 
             answer += miners[miner]['prefix_msg_format'].format(**format_dict)
+
             gpu_order_no = 0
             for gpu_no in range(0, len(miners[miner]['di'])):
                 gpu_num = int(miners[miner]['di'][gpu_no])
@@ -115,6 +136,11 @@ if __name__ == '__main__':
         try:
             last_start_time = datetime.now()
             log.info('starting bot in {}'.format(last_start_time))
+
+            if queue_thread is None:
+                queue_thread = Thread(target=queue_update_thread, name='QueueThread')
+                queue_thread.daemon = True
+                queue_thread.start()
 
             if notification_threads_array is None:
                 notification_threads_array = []

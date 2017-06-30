@@ -27,4 +27,4 @@ ch.setFormatter(formatter)
 log.addHandler(fh)
 log.addHandler(ch)
 
-# q = Queue.Queue()
+q = Queue.Queue()
