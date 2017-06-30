@@ -87,19 +87,18 @@ def show_info(message):
         if not user:
             return False
 
-        print json.dumps(user)
-        answer = '' #
+        answer = ''
         for miner in miners:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']))
             html = response.read()
             param_vals = re.search(miners[miner]['regex'], html)
-
+            print('123')
             format_dict = {}
             for index, param_name in enumerate(miners[miner]['parsed_params']):
                 format_dict[param_name] = param_vals.group(index + 1)
 
             answer += miners[miner]['prefix_msg_format'].format(**format_dict)
-
+            print('124')
             gpu_order_no = 0
             for gpu_no in range(0, len(miners[miner]['di'])):
                 gpu_num = int(miners[miner]['di'][gpu_no])
@@ -118,10 +117,11 @@ def show_info(message):
                 format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
                 gpu_order_no += 1
                 answer += miners[miner]['gpu_msg_format'].format(**format_dict)
-
+            print('125')
             answer += miners[miner]['postfix_msg_format'].format(**format_dict)
-
+        print('126')
         bot_send_message(message.chat.id, answer)
+        print('127')
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
