@@ -17,7 +17,7 @@ def queue_update_thread():
         try:
             time.sleep(1)
             for user in Users.get_active():
-                print 'added user to queue: ', user
+                # print 'added user to queue: ', user
                 time.sleep(0.3)
                 q.put(user)
             time.sleep(50)
@@ -39,7 +39,7 @@ def notification_thread():
             if not q.empty():
                 user = q.get()
 
-                print 'getted user: ', user
+                # print 'getted user: ', user
                 time.sleep(3)
                 q.task_done()
         except Exception as e:

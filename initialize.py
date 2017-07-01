@@ -11,7 +11,7 @@ import Queue
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-bot = telebot.TeleBot(token)
+bot = telebot.TeleBot(bot_token)
 last_start_time = None
 
 logging_mode = logging.INFO
