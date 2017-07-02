@@ -5,6 +5,8 @@ import urllib2
 from subprocess import call
 from initialize import log, bot, miners, settings
 
+previous_hasrates = []
+
 
 def implode_new_lines(text):
     return re.sub(r'[\r\n]+', r'\\n', text, re.UNICODE)
