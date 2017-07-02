@@ -28,3 +28,4 @@ log.addHandler(fh)
 log.addHandler(ch)
 
 q = Queue.Queue()
+previous_hasrates = []

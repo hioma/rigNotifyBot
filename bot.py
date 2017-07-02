@@ -6,10 +6,10 @@ import os
 import time
 from datetime import datetime
 from threading import Thread
-from threads import queue_update_thread, notification_thread
-from tools import implode_new_lines, bot_send_message, check_status_and_get_info
+from threads import passive_notification_queue_update_thread, notifications_send_thread, \
+    active_notification_queue_update_thread
+from tools import implode_new_lines, bot_send_message, get_miners_info
 from models import Users
-
 
 
 def request_is_old(message):
@@ -84,7 +84,7 @@ def show_info(message):
         if not user:
             return False
 
-        info = check_status_and_get_info()
+        info = get_miners_info()
         bot_send_message(message.chat.id, info)
     except Exception as e:
         log.error(
@@ -97,22 +97,27 @@ def show_info(message):
 
 
 if __name__ == '__main__':
-    queue_thread = notification_threads_array = None
+    queue_thread1 = queue_thread2 = notification_threads_array = None
     while True:
         try:
             last_start_time = datetime.now()
             log.info('starting bot in {}'.format(last_start_time))
 
-            if queue_thread is None:
-                queue_thread = Thread(target=queue_update_thread, name='QueueThread')
-                queue_thread.daemon = True
-                queue_thread.start()
+            if queue_thread1 is None:
+                queue_thread1 = Thread(target=passive_notification_queue_update_thread, name='QueueThread')
+                queue_thread1.daemon = True
+                queue_thread1.start()
+
+            if queue_thread2 is None:
+                queue_thread2 = Thread(target=active_notification_queue_update_thread, name='QueueThread')
+                queue_thread2.daemon = True
+                queue_thread2.start()
 
             if notification_threads_array is None:
                 notification_threads_array = []
                 for i in range(1):
                     notification_threads_array.append(
-                        Thread(target=notification_thread, name='NotificationThread{}'.format(i)))
+                        Thread(target=notifications_send_thread, name='NotificationThread{}'.format(i)))
                     notification_threads_array[i].daemon = True
                     notification_threads_array[i].start()
 
