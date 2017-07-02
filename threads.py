@@ -40,6 +40,8 @@ def active_notification_queue_update_thread():
                     bad_events_info = get_miners_info(do_active=True)
                     if not bad_events_info == '':
                         q.put((user, bad_events_info))
+                    else:
+                        log.info('no alerts detected')
                 time.sleep(settings['active_notification_timeout'])
             except Exception as e:
                 log.error(
@@ -58,7 +60,7 @@ def notifications_send_thread():
 
             if not q.empty():
                 (user, msg_text) = q.get()
-
+                log.info('send some message to @{}'.format(user['telegram_nickname']))
                 bot_send_message(user['chat_id'], msg_text)
                 time.sleep(3)
                 q.task_done()

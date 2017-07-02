@@ -18,7 +18,7 @@ class Users:
             storage['users'] = {}
             logging.getLogger('bot').info('DB created')
         if telegram_nickname not in storage['users']:
-            storage['users'][telegram_nickname] = {'chat_id': chat_id, 'active': True}
+            storage['users'][telegram_nickname] = {'telegram_nickname': telegram_nickname, 'chat_id': chat_id, 'active': True}
             logging.getLogger('bot').info('Added new user: @{} ({})'.format(telegram_nickname, chat_id))
         user = storage['users'][telegram_nickname]
         storage.close()

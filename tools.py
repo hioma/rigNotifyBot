@@ -2,7 +2,7 @@
 
 import re
 import urllib2
-from subprocess import call
+from subprocess import Popen
 from initialize import log, bot, miners, settings
 
 previous_hasrates = []
@@ -31,7 +31,7 @@ def get_miners_info(do_active=False):
             else:
                 status += ' running \'miner_freezes_or_not_runnig\' script'
                 log.warn(status)
-                call(settings['miner_freezes_or_not_runnig'])
+                Popen(settings['miner_freezes_or_not_runnig'])
                 return status
 
         html = response.read()
@@ -81,6 +81,6 @@ def get_miners_info(do_active=False):
                         status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
                                   'Previous info: ' + answer).format(i, percent)
                         log.warn(status)
-                        call(settings['hashrate_falled'])
+                        Popen(settings['hashrate_falled'])
                         return status
         return status
