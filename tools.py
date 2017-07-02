@@ -81,6 +81,6 @@ def get_miners_info(do_active=False):
                         status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
                                   'Previous info: ' + answer).format(i, percent)
                         log.warn(status)
-                        Popen(settings['hashrate_falled'])
+                        Popen(settings['hashrate_falled'], shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
                         return status
         return status
