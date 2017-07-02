@@ -71,16 +71,14 @@ def get_miners_info(do_active=False):
         status = ''
         global previous_hasrates
         if settings['hashrate_fall_percentage'] > 0:
-            if len(previous_hasrates) == 0:
-                previous_hasrates = new_hashrates[:]
-                return status
-            else:
+            if len(previous_hasrates) > 0:
                 for i, previous_hasrate in enumerate(previous_hasrates):
                     percent = 100.0 - float(new_hashrates[i]) / previous_hasrate * 100
                     if percent >= settings['hashrate_fall_percentage']:
                         status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
-                                  'Previous info: ' + answer).format(i, percent)
+                                  'Previous info: {}' ).format(i, percent, implode_new_lines(answer))
                         log.warn(status)
-                        Popen(settings['hashrate_falled'], shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-                        return status
+                        break
+                        # Popen(settings['hashrate_falled'], shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
+        previous_hasrates = new_hashrates[:]
         return status
