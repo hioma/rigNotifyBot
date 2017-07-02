@@ -104,12 +104,12 @@ if __name__ == '__main__':
             log.info('starting bot in {}'.format(last_start_time))
 
             if queue_thread1 is None:
-                queue_thread1 = Thread(target=passive_notification_queue_update_thread, name='QueueThread')
+                queue_thread1 = Thread(target=passive_notification_queue_update_thread, name='PassiveNotification')
                 queue_thread1.daemon = True
                 queue_thread1.start()
 
             if queue_thread2 is None:
-                queue_thread2 = Thread(target=active_notification_queue_update_thread, name='QueueThread')
+                queue_thread2 = Thread(target=active_notification_queue_update_thread, name='ActiveNotification')
                 queue_thread2.daemon = True
                 queue_thread2.start()
 
