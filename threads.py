@@ -62,7 +62,6 @@ def notifications_send_thread():
                 (user, msg_text) = q.get()
                 log.info('send some message to @{}'.format(user['telegram_nickname']))
                 bot_send_message(user['chat_id'], msg_text)
-                time.sleep(3)
                 q.task_done()
         except Exception as e:
             log.error(

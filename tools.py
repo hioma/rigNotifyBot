@@ -24,12 +24,12 @@ def get_miners_info(do_active=False):
         try:
             response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']), timeout=3)
         except urllib2.URLError:
-            status = 'Miner \'{}\' isn\'t running or freezed :('.format(miner)
+            status = 'Miner \'{}\' isn\'t running or freezed :(\n'.format(miner)
             if not do_active:
                 answer += status
                 continue
             else:
-                status += ' running \'miner_freezes_or_not_runnig\' script'
+                status += 'Running \'miner_freezes_or_not_runnig\' script'
                 log.warn(status)
                 Popen(settings['miner_freezes_or_not_runnig'])
                 return status
@@ -73,12 +73,13 @@ def get_miners_info(do_active=False):
         if settings['hashrate_fall_percentage'] > 0:
             if len(previous_hasrates) > 0:
                 for i, previous_hasrate in enumerate(previous_hasrates):
-                    percent = 100.0 - float(new_hashrates[i]) / previous_hasrate * 100
-                    if percent >= settings['hashrate_fall_percentage']:
-                        status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
-                                  'Previous info: {}' ).format(i, percent, implode_new_lines(answer))
-                        log.warn(status)
-                        break
+                    if previous_hasrate > 0:
+                        percent = 100.0 - float(new_hashrates[i]) / previous_hasrate * 100
+                        if percent >= settings['hashrate_fall_percentage']:
+                            status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
+                                      'Previous info:\n{}' ).format(i, percent, answer)
+                            log.warn(implode_new_lines(status))
+                            break
                         # Popen(settings['hashrate_falled'], shell=True, stdin=None, stdout=None, stderr=None, close_fds=True)
-        previous_hasrates = new_hashrates[:]
+            previous_hasrates = new_hashrates[:]
         return status
