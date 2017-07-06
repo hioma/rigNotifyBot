@@ -31,7 +31,7 @@ def get_miners_info(do_active=False):
             else:
                 status += 'Running \'miner_freezes_or_not_runnig\' script'
                 log.warn(status)
-                Popen(settings['miner_freezes_or_not_runnig'])
+                #!!! Popen(settings['miner_freezes_or_not_runnig'])
                 return status
 
         html = response.read()
