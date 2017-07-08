@@ -3,9 +3,9 @@
 import re
 import urllib2
 import subprocess
-from initialize import log, bot, miners, settings
+from initialize import log, bot, miners_settings, settings
 
-previous_hasrates = []
+previous_hasrates = {}
 
 
 def implode_new_lines(text):
@@ -19,10 +19,10 @@ def bot_send_message(message_chat_id, message, reply_markup=None):
 
 def get_miners_info(do_active=False):
     answer = ''
-    new_hashrates = []
-    for miner in miners:
+    new_hashrates = {}
+    for miner in miners_settings:
         try:
-            response = urllib2.urlopen('http://{}:{}/'.format(miners[miner]['ip'], miners[miner]['port']), timeout=3)
+            response = urllib2.urlopen('http://{}:{}/'.format(miners_settings[miner]['ip'], miners_settings[miner]['port']), timeout=3)
         except urllib2.URLError:
             status = 'Miner \'{}\' isn\'t running or freezed :(\n'.format(miner)
             if not do_active:
@@ -31,55 +31,59 @@ def get_miners_info(do_active=False):
             else:
                 status += 'Running \'miner_freezes_or_not_runnig\' script'
                 log.warn(status)
-                # subprocess.call(['start', '"" cmd /C "' + settings['miner_freezes_or_not_runnig'] + '"'])
+                subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
                 return status
 
         html = response.read()
-        param_vals = re.search(miners[miner]['regex'], html)
+        param_vals = re.search(miners_settings[miner]['regex'], html)
 
         format_dict = {}
-        for index, param_name in enumerate(miners[miner]['parsed_params']):
+        for index, param_name in enumerate(miners_settings[miner]['parsed_params']):
             format_dict[param_name] = param_vals.group(index + 1)
 
-        answer += miners[miner]['prefix_msg_format'].format(**format_dict)
+        answer += miners_settings[miner]['prefix_msg_format'].format(**format_dict)
 
         gpu_order_no = 0
-        for gpu_no in range(0, len(miners[miner]['di'])):
-            gpu_num = int(miners[miner]['di'][gpu_no])
+        for gpu_no in range(0, len(miners_settings[miner]['di'])):
+            gpu_num = int(miners_settings[miner]['di'][gpu_no])
             format_dict['gpu_num'] = gpu_num
             hashrate_primary = format_dict['hashrates_gpus_primary'].split(';')[gpu_order_no]
             if hashrate_primary.isdigit():
-                format_dict['hashrate_primary'] = float(hashrate_primary) / miners[miner]['divider']['primary']
-                new_hashrates.append(format_dict['hashrate_primary'])
+                format_dict['hashrate_primary'] = float(hashrate_primary) / miners_settings[miner]['divider']['primary']
+                if miner not in new_hashrates:
+                    new_hashrates[miner] = []
+                new_hashrates[miner].append(format_dict['hashrate_primary'])
             else:
                 format_dict['hashrate_primary'] = 0
             hashrate_secondary = format_dict['hashrates_gpus_secondary'].split(';')[gpu_order_no]
             if hashrate_secondary.isdigit():
-                format_dict['hashrate_secondary'] = float(hashrate_secondary) / miners[miner]['divider']['secondary']
-                new_hashrates.append(format_dict['hashrate_secondary'])
+                format_dict['hashrate_secondary'] = float(hashrate_secondary) / miners_settings[miner]['divider']['secondary']
+                if miner not in new_hashrates:
+                    new_hashrates[miner] = []
+                new_hashrates[miner].append(format_dict['hashrate_secondary'])
             else:
                 format_dict['hashrate_secondary'] = 0
             format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
             format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
             gpu_order_no += 1
-            answer += miners[miner]['gpu_msg_format'].format(**format_dict)
+            answer += miners_settings[miner]['gpu_msg_format'].format(**format_dict)
 
-        answer += miners[miner]['postfix_msg_format'].format(**format_dict)
+        answer += miners_settings[miner]['postfix_msg_format'].format(**format_dict)
     if not do_active:
         return answer
     else:
         status = ''
         global previous_hasrates
-        if settings['hashrate_fall_percentage'] > 0:
-            if len(previous_hasrates) > 0:
-                for i, previous_hasrate in enumerate(previous_hasrates):
+        if settings['hashrate_fall_percentage'] > 0 and len(previous_hasrates) > 0:
+            for miner in previous_hasrates:
+                for i, previous_hasrate in enumerate(previous_hasrates[miner]):
                     if previous_hasrate > 0:
-                        percent = 100.0 - float(new_hashrates[i]) / previous_hasrate * 100
-                        if percent >= settings['hashrate_fall_percentage']:
-                            status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
-                                      'Previous info:\n{}' ).format(i + 1, percent, answer)
+                        percent = 100.0 - float(new_hashrates[miner][i]) / previous_hasrate * 100
+                        if percent >= miners_settings[miner]['hashrate_fall_percentage']:
+                            status = ('Hashrate \'{}\'/{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
+                                      'Previous info:\n{}' ).format(miner, i + 1, percent, answer)
                             log.warn(implode_new_lines(status))
                             break
-                        # subprocess.call(['start', '"" cmd /C "' + settings['hashrate_falled'] + '"'])
-            previous_hasrates = new_hashrates[:]
+                        subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
+        previous_hasrates = new_hashrates.copy()
         return status
