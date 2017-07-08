@@ -1,6 +1,12 @@
 # rigNotifyBot
 
-Installation:
-    * Download 'get-pip.py', run 'python.exe get-pip.py', after 'pip install pyTelegramBotAPI'
-    * Create bot through @botfather, get token, and edit and rename 'config_example.py' to 'config.py'
-    * Due 'SNIMissingWarning' and 'InsecurePlatformWarning' startup warnings make 'pip install urllib3[secure]'
+## Disclaimer ##
+Я не профессиональный программист и даже не любитель, так что внутрь кода лучше даже не заглядывать, бота писал под себя, но ввиду отсутствия альтернатив решил поделиться им с общественностью, авось кому-нибудь и пригодится.
+Если есть какие-нибудь вопросы, обращайтесь в личку (на гитхабе она есть, да?), или на hioma@mail.ru, постараюсь помочь.
+
+## Установка ##
+* Установите Python 2.7;
+* Если будет отсутствовать PIP-установщик, то скачайте `get-pip.py`, после запустите `python.exe get-pip.py`, после `pip install pyTelegramBotAPI`;
+* Возьмите подходящий образец `config_*.py` из папки `examples`, переименуйте его в `config.py`, и положите рядом с `bot.py`;
+* В своём телеграмм-аккаунте создайте бота через @botfather, получите токен, и пропишите его в файле 'config.py'
+* Если при запуске (`python bot.py`) будут валиться ошибки "SNIMissingWarning" и "InsecurePlatformWarning", то выполните `pip install urllib3[secure]`
