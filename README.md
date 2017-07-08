@@ -7,6 +7,6 @@
 ## Установка ##
 * Установите [Python 2.7](https://www.python.org/downloads/release/python-2712/);
 * Если будет отсутствовать PIP-установщик, то [скачайте](https://bootstrap.pypa.io/get-pip.py) `get-pip.py`, после запустите `python.exe get-pip.py`, после `pip install pyTelegramBotAPI`;
-* Возьмите подходящий образец `config_*.py` из папки `examples`, переименуйте его в `config.py`, и положите рядом с `bot.py`;
+* Возьмите подходящий образец `config_*.py` из папки `config_examples`, переименуйте его в `config.py`, и положите рядом с `bot.py`;
 * В своём телеграмм-аккаунте создайте бота через @botfather, получите токен, и пропишите его в файле `config.py`;
 * Если при запуске (`python bot.py`) будут валиться ошибки "SNIMissingWarning" и "InsecurePlatformWarning", то выполните `pip install urllib3[secure]`;
