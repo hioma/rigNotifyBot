@@ -31,7 +31,7 @@ def get_miners_info(do_active=False):
             else:
                 status += 'Running \'miner_freezes_or_not_runnig\' script'
                 log.warn(status)
-                subprocess.call(['start', '"" cmd /C "' + settings['miner_freezes_or_not_runnig'] + '"'])
+                # subprocess.call(['start', '"" cmd /C "' + settings['miner_freezes_or_not_runnig'] + '"'])
                 return status
 
         html = response.read()
@@ -77,9 +77,9 @@ def get_miners_info(do_active=False):
                         percent = 100.0 - float(new_hashrates[i]) / previous_hasrate * 100
                         if percent >= settings['hashrate_fall_percentage']:
                             status = ('Hashrate #{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
-                                      'Previous info:\n{}' ).format(i, percent, answer)
+                                      'Previous info:\n{}' ).format(i + 1, percent, answer)
                             log.warn(implode_new_lines(status))
                             break
-                        subprocess.call(['start', '"" cmd /C "' + settings['hashrate_falled'] + '"'])
+                        # subprocess.call(['start', '"" cmd /C "' + settings['hashrate_falled'] + '"'])
             previous_hasrates = new_hashrates[:]
         return status
