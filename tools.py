@@ -88,8 +88,8 @@ def get_miners_info(do_active=False):
                                 status = ('Hashrate \'{}\'/{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
                                           'Previous info:\n{}' ).format(miner, i + 1, percent, answer)
                                 log.warn(implode_new_lines(status))
+                                subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
                                 break
-                            subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
             previous_hasrates = new_hashrates.copy()
             return status
     except Exception as e:
