@@ -79,8 +79,8 @@ def get_miners_info(do_active=False):
         else:
             status = ''
             global previous_hasrates
-            if settings['hashrate_fall_percentage'] > 0 and len(previous_hasrates) > 0:
-                for miner in previous_hasrates:
+            for miner in previous_hasrates:
+                if miners_settings[miner]['hashrate_fall_percentage'] > 0:
                     for i, previous_hasrate in enumerate(previous_hasrates[miner]):
                         if previous_hasrate > 0:
                             percent = 100.0 - float(new_hashrates[miner][i]) / previous_hasrate * 100
@@ -100,3 +100,4 @@ def get_miners_info(do_active=False):
                                                                 sys.exc_info()[2].tb_frame.f_code.co_filename),
                                                             sys._getframe().f_code.co_name,
                                                             e))
+        return 'Error: unknown exception in \'get_miners_info\' :('
