@@ -162,8 +162,6 @@ def reboot(message):
 
 
 if __name__ == '__main__':
-    # todo act/deact, user control
-
     queue_thread1 = queue_thread2 = messages_threads_array = None
     while True:
         try:

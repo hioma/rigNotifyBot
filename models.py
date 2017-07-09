@@ -18,8 +18,10 @@ class Users:
             storage['users'] = {}
             logging.getLogger('bot').info('DB created')
         if telegram_nickname not in storage['users']:
-            storage['users'][telegram_nickname] = {'telegram_nickname': telegram_nickname, 'chat_id': chat_id, 'allowed': False, 'active': True}
-            if len(settings['allowed_users']) == 0 or storage['users'][telegram_nickname] in settings['allowed_users']:
+            storage['users'][telegram_nickname] = {'telegram_nickname': telegram_nickname, 'chat_id': chat_id,
+                                                   'allowed': False, 'active': True}
+            if len(settings['allowed_users']) == 0 or storage['users'][telegram_nickname]['telegram_nickname'] in \
+                    settings['allowed_users']:
                 storage['users'][telegram_nickname]['allowed'] = True
 
             logging.getLogger('bot').info('Added new user: @{} ({})'.format(telegram_nickname, chat_id))
