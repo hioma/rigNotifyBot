@@ -32,9 +32,10 @@ class Users:
     @staticmethod
     def switch_user_status(telegram_nickname):
         storage = shelve.open(settings['shelve_name'], writeback=True)
-        storage['users'][telegram_nickname]['active'] = not storage['users'][telegram_nickname]['active']
+        user = storage['users'][telegram_nickname]
+        storage['users'][telegram_nickname]['active'] = not user['active']
         storage.close()
-        return storage['users'][telegram_nickname]
+        return user
 
     @staticmethod
     def get_active():
