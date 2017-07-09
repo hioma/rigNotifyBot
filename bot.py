@@ -110,7 +110,7 @@ def reboot(message):
         if not user:
             return False
 
-        bot_send_message(message.chat.id, 'Starting \'system_reboot\' setting...')
+        bot_send_message(message.chat.id, 'Запуск \'system_reboot\'-скрипта...')
         run_subprocess(settings['system_reboot']) # todo reboot by miners option
     except Exception as e:
         log.error(
@@ -131,7 +131,7 @@ def reboot(message):
 
         user = Users.switch_user_status(message.chat.username)
         bot_send_message(message.chat.id,
-                         '{} is now {}.'.format(message.chat.username, ('paused', 'active')[user['active']]))
+                         '@{} сейчас {}.'.format(message.chat.username, ('отключён', 'включён')[user['active']]))
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -186,7 +186,7 @@ if __name__ == '__main__':
                     messages_threads_array[i].daemon = True
                     messages_threads_array[i].start()
 
-            send_messages_to_all_active('Bot started at {}'.format(last_start_time))
+            send_messages_to_all_active('Бот запущен в {}'.format(last_start_time))
 
             bot.polling(none_stop=True)
 
