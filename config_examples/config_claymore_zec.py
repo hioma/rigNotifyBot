@@ -4,7 +4,7 @@
 
 settings = {
     'bot_token': 'your_secret_telegram_token', # API-ключ вашего бота
-    'allowed_users': ('your_telegram_nickname'), # список (регистрозависимый! без "@") пользователей, которым разрешёно пользование бота, если пустой - разрешено всем
+    'allowed_users': ('your_telegram_nickname'), # список (регистрозависимый! без "@") пользователей, которым разрешёно пользование бота, если пустой - разрешено всем. Задётся в формате ('user1', 'user2')
     'passive_notification_timeout': 1*60*60,
     'active_notification_timeout': 60,
     'subprocess_windows_crutch': r'C:\Users\admin\Desktop\start_subprocess.bat', # костыль, путь к батнику, который будет запускать ваши батники, по-другому у меня не получилось реализовать запуск параллельного процесса в питоне. Образец лежит в папке "extas/"
