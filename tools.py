@@ -6,6 +6,8 @@ import subprocess
 import sys
 import urllib2
 
+from telebot import types
+
 from initialize import log, bot, miners_settings, settings, q
 from models import Users
 
@@ -17,6 +19,9 @@ def implode_new_lines(text):
 
 
 def bot_send_message(message_chat_id, message, reply_markup=None):
+    if reply_markup is None:
+        reply_markup = types.ReplyKeyboardMarkup(row_width=1)
+        reply_markup.add(types.KeyboardButton('/info'), types.KeyboardButton('/reboot'))
     log.debug('sended message to {} chat: '.format(message_chat_id, implode_new_lines(message)))
     bot.send_message(message_chat_id, message, reply_markup=reply_markup)
 

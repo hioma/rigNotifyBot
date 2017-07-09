@@ -99,8 +99,8 @@ def show_info(message):
 
 if __name__ == '__main__':
     # todo /reboot event
-    # todo start/exit notification
-    # todo bat in git
+    # todo act/deact, user control
+    # todo buttons
 
     queue_thread1 = queue_thread2 = messages_threads_array = None
     while True:
@@ -133,17 +133,6 @@ if __name__ == '__main__':
             log.info('exiting with keyboard interrupt... press ctrl+c again during 10 sec')
             time.sleep(10)
         except KeyboardInterrupt:
-            try:
-                send_messages_to_all_active('Detected ctrl+c, exiting...')
-            except Exception:
-                pass
-            sys.exit()
-        except SystemExit:
-            log.info('SystemExit detected, exiting...')
-            try:
-                send_messages_to_all_active('Detected SystemExit, exiting...')
-            except Exception:
-                pass
             sys.exit()
         except Exception as main_e:
             log.error(
