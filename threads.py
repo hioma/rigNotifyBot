@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import time
-import sys
 import os
-from datetime import datetime
-from initialize import log, q
-from tools import bot_send_message, get_miners_info
-from models import Users
+import sys
+import time
+
 from config import settings
+from initialize import log, q
+from models import Users
+from tools import bot_send_message, get_miners_info
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -53,16 +53,16 @@ def active_notification_queue_update_thread():
                                                                     e))
 
 
-def notifications_send_thread():
+def messages_send_thread():
     while True:
         try:
-            time.sleep(1)
-
             if not q.empty():
                 (user, msg_text) = q.get()
                 log.info('send some message to @{}'.format(user['telegram_nickname']))
                 bot_send_message(user['chat_id'], msg_text)
                 q.task_done()
+
+            time.sleep(1)
         except Exception as e:
             log.error(
                 '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,

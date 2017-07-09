@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from initialize import *
 import os
 import time
 from datetime import datetime
 from threading import Thread
-from threads import passive_notification_queue_update_thread, notifications_send_thread, \
-    active_notification_queue_update_thread
-from tools import implode_new_lines, bot_send_message, get_miners_info
+
+from initialize import *
 from models import Users
+from threads import passive_notification_queue_update_thread, messages_send_thread, \
+    active_notification_queue_update_thread
+from tools import implode_new_lines, bot_send_message, get_miners_info, send_messages_to_all_active
 
 
 def request_is_old(message):
@@ -97,7 +98,11 @@ def show_info(message):
 
 
 if __name__ == '__main__':
-    queue_thread1 = queue_thread2 = notification_threads_array = None
+    # todo /reboot event
+    # todo start/exit notification
+    # todo bat in git
+
+    queue_thread1 = queue_thread2 = messages_threads_array = None
     while True:
         try:
             last_start_time = datetime.now()
@@ -113,19 +118,32 @@ if __name__ == '__main__':
                 queue_thread2.daemon = True
                 queue_thread2.start()
 
-            if notification_threads_array is None:
-                notification_threads_array = []
+            if messages_threads_array is None:
+                messages_threads_array = []
                 for i in range(1):
-                    notification_threads_array.append(
-                        Thread(target=notifications_send_thread, name='NotificationThread{}'.format(i)))
-                    notification_threads_array[i].daemon = True
-                    notification_threads_array[i].start()
+                    messages_threads_array.append(
+                        Thread(target=messages_send_thread, name='NotificationThread{}'.format(i)))
+                    messages_threads_array[i].daemon = True
+                    messages_threads_array[i].start()
+
+            send_messages_to_all_active('Bot started at {}'.format(last_start_time))
 
             bot.polling(none_stop=True)
 
-            log.info('exiting with keyboard interrupt... wait 10 sec')
+            log.info('exiting with keyboard interrupt... press ctrl+c again during 10 sec')
             time.sleep(10)
         except KeyboardInterrupt:
+            try:
+                send_messages_to_all_active('Detected ctrl+c, exiting...')
+            except Exception:
+                pass
+            sys.exit()
+        except SystemExit:
+            log.info('SystemExit detected, exiting...')
+            try:
+                send_messages_to_all_active('Detected SystemExit, exiting...')
+            except Exception:
+                pass
             sys.exit()
         except Exception as main_e:
             log.error(

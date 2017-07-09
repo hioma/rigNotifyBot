@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import re
-import urllib2
-import subprocess
-from initialize import log, bot, miners_settings, settings
-
-import sys
 import os
+import re
+import subprocess
+import sys
+import urllib2
 
+from initialize import log, bot, miners_settings, settings, q
+from models import Users
 
 previous_hasrates = {}
 
@@ -17,8 +17,14 @@ def implode_new_lines(text):
 
 
 def bot_send_message(message_chat_id, message, reply_markup=None):
-    log.debug(implode_new_lines(message))
+    log.debug('sended message to {} chat: '.format(message_chat_id, implode_new_lines(message)))
     bot.send_message(message_chat_id, message, reply_markup=reply_markup)
+
+
+def send_messages_to_all_active(message, reply_markup=None):
+    log.debug('sended message to all active: '.format(implode_new_lines(message)))
+    for user in Users.get_active():
+        q.put((user, message))
 
 
 def get_miners_info(do_active=False):
@@ -35,7 +41,7 @@ def get_miners_info(do_active=False):
                     continue
                 else:
                     status += 'Running \'miner_freezes_or_not_runnig\' script'
-                    log.warn(status)
+                    log.warn(implode_new_lines(status))
                     subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
                     return status
 
@@ -85,7 +91,7 @@ def get_miners_info(do_active=False):
                         if previous_hasrate > 0:
                             percent = 100.0 - float(new_hashrates[miner][i]) / previous_hasrate * 100
                             if percent >= miners_settings[miner]['hashrate_fall_percentage']:
-                                status = ('Hashrate \'{}\'/{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
+                                status = ('Hashrate \'{}\'#{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
                                           'Previous info:\n{}' ).format(miner, i + 1, percent, answer)
                                 log.warn(implode_new_lines(status))
                                 subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
