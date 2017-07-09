@@ -44,7 +44,12 @@ def get_user_info_and_check_timestamp(message):
             return False
 
         user = Users.get_or_create_user(message.chat.username, message.chat.id)
-        return user
+        if user['allowed']:
+            return user
+        else:
+            bot_send_message(message.chat.id, 'К сожалению, настройки бота не разрешают вам его использование, '
+                                              'обратитесь к его владельцу для разрешения проблемы.')
+            return False
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -63,8 +68,9 @@ def handle_start_help(message):
             return False
 
         answer = 'Привет, @{}!\n' \
-                 'Данный бот умеет следить за тем ригом, на котором запущен. В данный момент есть поддержка' \
-                 'Claymore\'s-майнеров. Бота я делаю под себя, но если вдруг у тебя есть идеи или вопросы, ' \
+                 'Данный бот умеет следить за майнерами по их http-интерфейсу, все подробности есть по ссылке ' \
+                 'https://github.com/hioma/rigNotifyBot. В данный момент есть поддержка ' \
+                 'Claymore\'s eth/zec майнеров. Бота я делаю под себя, но если вдруг у тебя есть идеи или вопросы, ' \
                  'то пиши @unknownplayer, попробуем что-нибудь сделать.\n' \
                  'Командуй /info, чтобы начать.'.format(message.chat.username)
         bot_send_message(message.chat.id, answer)
@@ -105,7 +111,46 @@ def reboot(message):
             return False
 
         bot_send_message(message.chat.id, 'Starting \'system_reboot\' setting...')
-        run_subprocess(settings['system_reboot'])
+        run_subprocess(settings['system_reboot']) # todo reboot by miners option
+    except Exception as e:
+        log.error(
+            '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+                                                            sys.exc_info()[2].tb_lineno,
+                                                            os.path.basename(
+                                                                sys.exc_info()[2].tb_frame.f_code.co_filename),
+                                                            sys._getframe().f_code.co_name,
+                                                            e))
+
+
+@bot.message_handler(commands=['pause'])
+def reboot(message):
+    try:
+        user = get_user_info_and_check_timestamp(message)
+        if not user:
+            return False
+
+        user = Users.switch_user_status(message.chat.username)
+        bot_send_message(message.chat.id,
+                         '{} is now {}.'.format(message.chat.username, ('paused', 'active')[user['active']]))
+    except Exception as e:
+        log.error(
+            '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+                                                            sys.exc_info()[2].tb_lineno,
+                                                            os.path.basename(
+                                                                sys.exc_info()[2].tb_frame.f_code.co_filename),
+                                                            sys._getframe().f_code.co_name,
+                                                            e))
+
+
+@bot.message_handler(commands=['donate'])
+def reboot(message):
+    try:
+        user = get_user_info_and_check_timestamp(message)
+        if not user:
+            return False
+
+        bot_send_message(message.chat.id, 'BTC: 16oNeHqWoqgvstvZhU93aYSM5aC9xmSmjs\n'
+                                          'ETH: 0xf6d7451B848986ef088F487E96e5892E71f124a8')
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
@@ -117,9 +162,7 @@ def reboot(message):
 
 
 if __name__ == '__main__':
-    # todo /reboot event
     # todo act/deact, user control
-    # todo buttons
 
     queue_thread1 = queue_thread2 = messages_threads_array = None
     while True:

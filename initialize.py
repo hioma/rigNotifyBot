@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import logging
-import telebot
-from config import *
 import Queue
+import logging
+import sys
 
+import telebot
+
+from config import *
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-bot = telebot.TeleBot(bot_token)
+bot = telebot.TeleBot(settings['bot_token'])
 last_start_time = None
 
 logging_mode = logging.INFO
