@@ -20,7 +20,7 @@ def implode_new_lines(text):
 
 def bot_send_message(message_chat_id, message, reply_markup=None):
     if reply_markup is None:
-        reply_markup = types.ReplyKeyboardMarkup(row_width=2)
+        reply_markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         reply_markup.add(
             types.KeyboardButton('/info'),
             types.KeyboardButton('/reboot'),
