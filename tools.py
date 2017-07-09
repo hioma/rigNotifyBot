@@ -20,7 +20,7 @@ def implode_new_lines(text):
 
 def bot_send_message(message_chat_id, message, reply_markup=None):
     if reply_markup is None:
-        reply_markup = types.ReplyKeyboardMarkup(row_width=1)
+        reply_markup = types.ReplyKeyboardMarkup(row_width=2)
         reply_markup.add(types.KeyboardButton('/info'), types.KeyboardButton('/reboot'))
     log.debug('sended message to {} chat: '.format(message_chat_id, implode_new_lines(message)))
     bot.send_message(message_chat_id, message, reply_markup=reply_markup)
@@ -30,6 +30,10 @@ def send_messages_to_all_active(message, reply_markup=None):
     log.debug('sended message to all active: '.format(implode_new_lines(message)))
     for user in Users.get_active():
         q.put((user, message))
+
+
+def run_subprocess(proc_path):
+    subprocess.call([settings['subprocess_windows_crutch'], proc_path])
 
 
 def get_miners_info(do_active=False):
@@ -47,7 +51,7 @@ def get_miners_info(do_active=False):
                 else:
                     status += 'Running \'miner_freezes_or_not_runnig\' script'
                     log.warn(implode_new_lines(status))
-                    subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
+                    run_subprocess(miners_settings[miner]['miner_freezes_or_not_runnig'])
                     return status
 
             html = response.read()
@@ -99,7 +103,7 @@ def get_miners_info(do_active=False):
                                 status = ('Hashrate \'{}\'#{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
                                           'Previous info:\n{}' ).format(miner, i + 1, percent, answer)
                                 log.warn(implode_new_lines(status))
-                                subprocess.call([settings['subprocess_windows_crutch'], miners_settings[miner]['miner_freezes_or_not_runnig']])
+                                run_subprocess(miners_settings[miner]['miner_freezes_or_not_runnig'])
                                 break
             previous_hasrates = new_hashrates.copy()
             return status

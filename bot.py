@@ -10,7 +10,7 @@ from initialize import *
 from models import Users
 from threads import passive_notification_queue_update_thread, messages_send_thread, \
     active_notification_queue_update_thread
-from tools import implode_new_lines, bot_send_message, get_miners_info, send_messages_to_all_active
+from tools import implode_new_lines, bot_send_message, get_miners_info, send_messages_to_all_active, run_subprocess
 
 
 def request_is_old(message):
@@ -87,6 +87,25 @@ def show_info(message):
 
         info = get_miners_info()
         bot_send_message(message.chat.id, info)
+    except Exception as e:
+        log.error(
+            '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
+                                                            sys.exc_info()[2].tb_lineno,
+                                                            os.path.basename(
+                                                                sys.exc_info()[2].tb_frame.f_code.co_filename),
+                                                            sys._getframe().f_code.co_name,
+                                                            e))
+
+
+@bot.message_handler(commands=['reboot'])
+def reboot(message):
+    try:
+        user = get_user_info_and_check_timestamp(message)
+        if not user:
+            return False
+
+        bot_send_message(message.chat.id, 'Starting \'system_reboot\' setting...')
+        run_subprocess(settings['system_reboot'])
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
