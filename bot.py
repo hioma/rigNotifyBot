@@ -6,6 +6,8 @@ import time
 from datetime import datetime
 from threading import Thread
 
+from telebot import types
+
 from initialize import *
 from models import Users
 from threads import passive_notification_queue_update_thread, messages_send_thread, \
@@ -73,7 +75,12 @@ def handle_start_help(message):
                  'Claymore\'s eth/zec майнеров. Бота я делаю под себя, но если вдруг у тебя есть идеи или вопросы, ' \
                  'то пиши @unknownplayer, попробуем что-нибудь сделать.\n' \
                  'Командуй /info, чтобы начать.'.format(message.chat.username)
-        bot_send_message(message.chat.id, answer)
+        reply_markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        reply_markup.add(
+            types.KeyboardButton('/help'),
+            types.KeyboardButton('/info'),
+        )
+        bot_send_message(message.chat.id, answer, reply_markup)
     except Exception as e:
         log.error(
             '! {} exception in row #{} ({}, {}): {}'.format(sys.exc_info()[0].__name__,
