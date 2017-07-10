@@ -23,7 +23,7 @@ Python, в конфигурационных файлах прописывают�
 
 ## Скриншоты ##
 ![image](https://user-images.githubusercontent.com/13254725/28004333-8a23d99c-654c-11e7-9d21-705b80ec76e1.png)
-![image](https://user-images.githubusercontent.com/13254725/28004758-6df95a96-654f-11e7-9bb1-f894ae2fa850.png)
+![image](https://user-images.githubusercontent.com/13254725/28004812-abb2f23e-654f-11e7-8607-86ef46ffbcfb.png)
 
 ## Установка ##
 * Установите [Python 2.7](https://www.python.org/downloads/release/python-2712/);
