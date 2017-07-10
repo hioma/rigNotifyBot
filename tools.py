@@ -49,7 +49,7 @@ def get_miners_info(do_active=False):
             try:
                 response = urllib2.urlopen('http://{}:{}/'.format(miners_settings[miner]['ip'], miners_settings[miner]['port']), timeout=3)
             except urllib2.URLError:
-                status = 'Miner \'{}\' isn\'t running or freezed :(\n'.format(miner)
+                status = 'Майнер \'{}\' не запущен или завис :(\n'.format(miner)
                 if not do_active:
                     answer += status
                     continue
@@ -105,8 +105,8 @@ def get_miners_info(do_active=False):
                         if previous_hasrate > 0:
                             percent = 100.0 - float(new_hashrates[miner][i]) / previous_hasrate * 100
                             if percent >= miners_settings[miner]['hashrate_fall_percentage']:
-                                status = ('Hashrate \'{}\'#{} lower by {:0.0f}%, running \'hashrate_falled\' script\n'
-                                          'Previous info:\n{}' ).format(miner, i + 1, percent, answer)
+                                status = ('Хэшрейт \'{}\'#{} упал на {:0.0f}%, запускаем \'hashrate_falled\' скрипт\n'
+                                          'Предыдущие данные:\n{}' ).format(miner, i + 1, percent, answer)
                                 log.warn(implode_new_lines(status))
                                 run_subprocess(miners_settings[miner]['miner_freezes_or_not_runnig'])
                                 break

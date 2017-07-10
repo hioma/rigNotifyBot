@@ -50,7 +50,8 @@ def get_user_info_and_check_timestamp(message):
             return user
         else:
             bot_send_message(message.chat.id, 'К сожалению, настройки бота не разрешают вам его использование, '
-                                              'обратитесь к его владельцу для разрешения проблемы.')
+                                              'обратитесь к его владельцу для разрешения проблемы (опция '
+                                              '\'allowed_users\' в config.py).')
             return False
     except Exception as e:
         log.error(
