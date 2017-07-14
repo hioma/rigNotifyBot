@@ -47,14 +47,14 @@ def get_miners_info(do_active=False):
         new_hashrates = {}
         for miner in miners_settings:
             try:
-                response = urllib2.urlopen('http://{}:{}/'.format(miners_settings[miner]['ip'], miners_settings[miner]['port']), timeout=3)
-            except urllib2.URLError:
+                response = urllib2.urlopen('http://{}:{}/'.format(miners_settings[miner]['ip'], miners_settings[miner]['port']), timeout=miners_settings[miner]['timeout'])
+            except Exception:
                 status = 'Майнер \'{}\' не запущен или завис :(\n'.format(miner)
                 if not do_active:
                     answer += status
                     continue
                 else:
-                    status += 'Running \'miner_freezes_or_not_runnig\' script'
+                    status += 'Запускаем \'miner_freezes_or_not_runnig\'-скрипт'
                     log.warn(implode_new_lines(status))
                     run_subprocess(miners_settings[miner]['miner_freezes_or_not_runnig'])
                     return status

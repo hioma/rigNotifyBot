@@ -33,11 +33,12 @@ miners_settings = {
         'computed_params': ('gpu_num', 'hashrate_primary', 'hashrate_secondary', 'temp', 'fan'),
         'divider': {'primary': 1000, 'secondary': 1000},
         'prefix_msg_format': '', # паттерн, который будет использован в сообщении от бота до блока с перечнем карт. Тут можно написать название майнера (например, 'Дуал eth/dec'), или общий хэшрейт ('Всего eth: {totalhashrate_primary}'), время работы ('Работает уже {workingtime} секунд') и прочие параметры, являющиеся общими для всех карт
-        'gpu_msg_format': 'GPU{gpu_num}: {hashrate_primary:0.1f}mh/s ETH, {hashrate_secondary:0.0f}mhs DEC, {temp}°, {fan}% fan\n', # паттерн, из которого будет формироваться информация для каждой карты в отдельности. Пример: 'GPU{gpu_num}: {hashrate_primary:0.1f}mh/s ETH, {temp}°, {fan}% fan\n'. Используйте формат "variable_name:0.Nf" для редактирования количества знаков после запятой (N) для дробных чисел
+        'gpu_msg_format': 'GPU{gpu_num}: {hashrate_primary:0.1f}mh/s ETH, {hashrate_secondary:0.0f}mhs DEC, {temp}°, {fan}% fan\n', # паттерн, из которого будет формироваться информация для каждой карты в отдельности. Пример для соло-майнинга (без хэшрейта дуала): 'GPU{gpu_num}: {hashrate_primary:0.1f}mh/s ETH, {temp}°, {fan}% fan\n'. Используйте формат "variable_name:0.Nf" для редактирования количества знаков после запятой (N) для дробных чисел
         'postfix_msg_format': '', # паттерн, используемый после блоков gpu_msg_format, по аналогии с предыдущими блоками
 
         'miner_freezes_or_not_runnig': r'C:\Users\admin\Desktop\do_nothing.bat', # путь к батнику, который будет запускаться в случае, если бот не сможет подключиться к майнеру
         'hashrate_fall_percentage': 80, # определяет уровень падения хэшрейта майнера, при котором возникает событие "хэшрейт упал"
         'hashrate_falled': r'C:\Users\admin\Desktop\do_nothing.bat', # путь к батнику, который будет запускаться в случае, если на любой из карт майнера хэшрейт упал на "hashrate_fall_percentage" процентов
+        'timeout': 3, # таймаут подключения к http-интерфейсу майнера. Если у вас сильно тормозит система, но при этом успешно майнит, то можно поднять таймаут до нужного числа секунд
     }
 }
