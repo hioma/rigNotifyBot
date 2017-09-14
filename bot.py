@@ -174,7 +174,7 @@ if __name__ == '__main__':
     while True:
         try:
             last_start_time = datetime.now()
-            log.info('starting bot in {}'.format(last_start_time))
+            log.info('{}starting bot in {}'.format(('re-', '')[queue_thread1 is None], last_start_time))
 
             if queue_thread1 is None:
                 queue_thread1 = Thread(target=passive_notification_queue_update_thread, name='PassiveNotification')
@@ -194,7 +194,7 @@ if __name__ == '__main__':
                     messages_threads_array[i].daemon = True
                     messages_threads_array[i].start()
 
-            send_messages_to_all_active('Бот запущен в {}'.format(last_start_time))
+            send_messages_to_all_active('Бот {}запущен в {}'.format(('пере-', '')[queue_thread1 is None], last_start_time))
 
             bot.polling(none_stop=True)
 

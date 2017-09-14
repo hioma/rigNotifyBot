@@ -88,8 +88,10 @@ def get_miners_info(do_active=False):
                     new_hashrates[miner].append(format_dict['hashrate_secondary'])
                 else:
                     format_dict['hashrate_secondary'] = 0
-                format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
-                format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
+                if gpu_num * 2 in format_dict['temp_fans'].split(';'):
+                    format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
+                if gpu_num * 2 + 1 in format_dict['temp_fans'].split(';'):
+                    format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
                 gpu_order_no += 1
                 answer += miners_settings[miner]['gpu_msg_format'].format(**format_dict)
 
