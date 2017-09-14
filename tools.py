@@ -90,8 +90,12 @@ def get_miners_info(do_active=False):
                     format_dict['hashrate_secondary'] = 0
                 if gpu_num * 2 in format_dict['temp_fans'].split(';'):
                     format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
+                else:
+                    format_dict['temp'] = 'NaN'
                 if gpu_num * 2 + 1 in format_dict['temp_fans'].split(';'):
                     format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
+                else:
+                    format_dict['fan'] = 'NaN'
                 gpu_order_no += 1
                 answer += miners_settings[miner]['gpu_msg_format'].format(**format_dict)
 
