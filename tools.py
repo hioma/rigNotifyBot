@@ -88,11 +88,11 @@ def get_miners_info(do_active=False):
                     new_hashrates[miner].append(format_dict['hashrate_secondary'])
                 else:
                     format_dict['hashrate_secondary'] = 0
-                if gpu_num * 2 in format_dict['temp_fans'].split(';'):
+                if gpu_num * 2 < len(format_dict['temp_fans'].split(';')):
                     format_dict['temp'] = format_dict['temp_fans'].split(';')[gpu_num * 2]
                 else:
                     format_dict['temp'] = 'NaN'
-                if gpu_num * 2 + 1 in format_dict['temp_fans'].split(';'):
+                if gpu_num * 2 + 1 < len(format_dict['temp_fans'].split(';')):
                     format_dict['fan'] = format_dict['temp_fans'].split(';')[gpu_num * 2 + 1]
                 else:
                     format_dict['fan'] = 'NaN'
